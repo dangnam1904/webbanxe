@@ -1,0 +1,72 @@
+﻿@model IEnumerable<webbanxe.Models.Bike>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" asp-controller="Bikes" >Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NameBike)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PricePromotion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImageBike)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DescriptionBike)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypeBike)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NameBike)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricePromotion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImageBike)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DescriptionBike)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeBike.NameType)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IdBike">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IdBike">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdBike">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
