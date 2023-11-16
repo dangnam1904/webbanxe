@@ -11,14 +11,10 @@ namespace webbanxe.Help
         public static string  EncrytMd5(string password)
         {
             StringBuilder hash = new StringBuilder();
-
-            // input string
-            string input = "Technology crowds";
-
             // defining MD5 object
             var md5provider = new MD5CryptoServiceProvider();
             // computing MD5 hash
-            byte[] bytes = md5provider.ComputeHash(new UTF8Encoding().GetBytes(input));
+            byte[] bytes = md5provider.ComputeHash(new UTF8Encoding().GetBytes(password));
             for (int i = 0; i < bytes.Length; i++)
             {
                 hash.Append(bytes[i].ToString("x2"));

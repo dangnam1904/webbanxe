@@ -44,9 +44,7 @@ namespace webbanxe.Controllers
                     HttpContext.Session.SetString("username", user.UserName);
                     HttpContext.Session.SetString("idUser", user.IdUser.ToString());
                     HttpContext.Session.SetString("role", user.RoleId.ToString());
-                }
-                else
-                {
+
                     if (Int32.Parse(HttpContext.Session.GetString("role")) == ROLE_ADMIN)
                     {
                         var routeValues = new RouteValueDictionary
@@ -61,12 +59,15 @@ namespace webbanxe.Controllers
                         return RedirectToAction("Index", "Home");
                     }
                 }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
             else
             {
                 return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
@@ -85,7 +86,6 @@ namespace webbanxe.Controllers
             _context.Users.Add(u);
             _context.SaveChangesAsync();
             return RedirectToAction("Index", "Home");
-
         }
 
         [HttpGet]
