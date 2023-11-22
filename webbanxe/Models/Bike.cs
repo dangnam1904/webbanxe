@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace webbanxe.Models
 {
@@ -16,8 +19,10 @@ namespace webbanxe.Models
 
 
         [Key] public int IdBike { get; set; }
+
         [Required]
         [StringLength(200)]
+        [DisplayName("Name Bike")]
         public string NameBike { get; set; }
         [Required]
         public double price { get; set; }
@@ -26,11 +31,19 @@ namespace webbanxe.Models
         public int  Quantity { get; set; }
 
         [StringLength(700)]
+        [ValidateNever]
         public string ImageBike { get; set; }
         public string DescriptionBike { get; set; }
 
         [ForeignKey(nameof(TypeBike))]
+        [ValidateNever]
         public int IdType { get; set; }
+
+        [ValidateNever]
         public virtual TypeBike TypeBike { get; set; }
+
+        [NotMapped]
+        [DisplayName("Upload File")]
+        public List<IFormFile> ImageFile { get; set; }
     }
 }

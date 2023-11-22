@@ -3,7 +3,7 @@
 
 <!-- Blog Start -->
 <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
-    <div class="container py-5">
+    <div class="container py-5" style="padding-top:128px !important">
         <div class="row g-5">
             <!-- Blog list Start -->
           <div class="col-lg-8">
@@ -14,12 +14,13 @@
 
                         @foreach (var item in ViewBag.ListBike)
                         {
-                            string url = Functions.TitleSlugGeneration("", item.NameBike, item.IdBike);
+                            string url = Functions.TitleSlugGenerationReves("", item.IdBike, item.NameBike);
+                            string image = item.ImageBike.Split(";")[0];
                             <div class="col-md-6 wow slideInUp" data-wow-delay="0.1s">
                                 <div class="blog-item bg-light rounded overflow-hidden">
                                     <div class="blog-img position-relative overflow-hidden">
-                                        <img class="img-fluid" src="~/img/@item.ImageBike" alt="Ảnh xe" style="width:-webkit-fill-available">
-                                        <a class="position-absolute top-0 start-0 bg-primary text-white rounded-end mt-5 py-2 px-4" href="">@((item.price * item.PricePromotion).ToString("#,##0.0")) vnđ</a>
+                                        <img class="img-fluid" src="~/img/@image" alt="Ảnh xe" style="width:-webkit-fill-available">
+                                        <a class="position-absolute top-0 start-0 bg-primary text-white rounded-end mt-5 py-2 px-4" href="">@((item.price -(item.price * item.PricePromotion)).ToString("#,##0.0")) vnđ</a>
                                     </div>
                                     <div class="p-4">
 

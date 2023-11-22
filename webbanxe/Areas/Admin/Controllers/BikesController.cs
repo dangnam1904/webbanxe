@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using webbanxe.Data;
 using webbanxe.Models;
+using webbanxe.Models.Authentications;
+using webbanxe.Models.ModelView;
 
 namespace webbanxe.Areas.Admin.Controllers
 {
@@ -14,13 +19,19 @@ namespace webbanxe.Areas.Admin.Controllers
     public class BikesController : Controller
     {
         private readonly DataContext _context;
+        private readonly ILogger<HomeController> _logger;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public BikesController(DataContext context)
+
+        public BikesController(DataContext context, ILogger<HomeController> logger, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _logger = logger;
+            this._hostEnvironment = hostEnvironment;
         }
 
         // GET: Admin/Bikes
+        [Authentication]
         public async Task<IActionResult> Index()
         {
             var dataContext = _context.Bike.Include(b => b.TypeBike);
@@ -28,6 +39,7 @@ namespace webbanxe.Areas.Admin.Controllers
         }
 
         // GET: Admin/Bikes/Details/5
+        [Authentication]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Bike == null)
@@ -46,31 +58,128 @@ namespace webbanxe.Areas.Admin.Controllers
             return View(bike);
         }
 
-        // GET: Admin/Bikes/Create
-        public IActionResult Create()
+
+        [HttpGet]
+        [Authentication]
+        public IActionResult CreateOrUpdate(int? id)
         {
-            ViewData["IdType"] = new SelectList(_context.TypeBike, "IdType", "NameBike");
-            return View();
+            
+            ViewBike viewBike = new ViewBike();
+            viewBike.Bike = new Bike();
+            viewBike.ListTypeBike = _context.TypeBike.ToList().Select( m=>
+            new SelectListItem { Text = m.NameType, Value = m.IdType.ToString() });
+
+            var data = _context.TypeBike.ToList();
+            ViewBag.TypeBike = new SelectList(data, "IdType", "NameType");
+            if( id == null || id == 0)
+            {
+                return View(viewBike);
+            }
+            else
+            {
+                var bike = from m in _context.Bike where m.IdBike == id select m;
+                foreach( var item in bike)
+                {
+                    viewBike.Bike.IdBike = item.IdBike;
+                    viewBike.Bike.NameBike = item.NameBike;
+                    viewBike.Bike.price = item.price;
+                    viewBike.Bike.PricePromotion = item.PricePromotion;
+                    viewBike.Bike.DescriptionBike   = item.DescriptionBike;
+                    viewBike.Bike.IdType = item.IdType;
+                    viewBike.Bike.Quantity = item.Quantity;
+                }
+                return View(viewBike);
+            }
+           
         }
 
-        // POST: Admin/Bikes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdBike,NameBike,price,PricePromotion,Quantity,ImageBike,DescriptionBike,IdType")] Bike bike)
+        [Authentication]
+        public IActionResult CreateOrUpdate(ViewBike viewBike)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(bike);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                
+
+                if (viewBike.Bike.IdBike == 0)
+                {
+                    if (viewBike.Bike.ImageFile != null)
+                    {
+                        string imageBike = "";
+                        foreach (var file in viewBike.Bike.ImageFile)
+                        {
+                            imageBike += file.FileName + ";";
+                            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img");
+
+                            //create folder if not exist
+                            if (!Directory.Exists(path))
+                                Directory.CreateDirectory(path);
+
+                            string fileNameWithPath = Path.Combine(path, file.FileName);
+
+                            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                            {
+                                file.CopyTo(stream);
+                            }
+                        }
+                        viewBike.Bike.ImageBike = imageBike.TrimEnd(';');
+                    }
+                    _context.Bike.Add(viewBike.Bike);
+
+                }
+                else
+                {
+                    if (viewBike.Bike.ImageFile != null)
+                    {
+                        string imageBike = "";
+                        foreach (var file in viewBike.Bike.ImageFile)
+                        {
+                            imageBike += file.FileName + ";";
+                            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img");
+
+                            //create folder if not exist
+                            if (!Directory.Exists(path))
+                                Directory.CreateDirectory(path);
+
+                            string fileNameWithPath = Path.Combine(path, file.FileName);
+
+                            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                            {
+                                file.CopyTo(stream);
+                            }
+                        }
+                        viewBike.Bike.ImageBike = imageBike.TrimEnd(';');
+                    }
+
+                    var oldBike = from m in _context.Bike where m.IdBike == viewBike.Bike.IdBike select m;
+                    
+                    Bike bike1 = new Bike();
+                    foreach (var item in oldBike)
+                    {
+                       bike1.ImageBike =  item.ImageBike;
+                    }
+                    string oldImg = bike1.ImageBike;
+                    foreach (var item in oldImg.Split(";"))
+                    {
+                        System.IO.File.Delete(Path.Combine
+                            (Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img"), item));
+                    }
+                    _context.Bike.Update(viewBike.Bike);
+                }
+                _context.SaveChanges();
+                return RedirectToAction("Index");
             }
-            ViewData["IdType"] = new SelectList(_context.TypeBike, "IdType", "NameBike", bike.IdType);
-            return View(bike);
+            else
+            {
+                return View(viewBike);
+            }
+               
         }
 
         // GET: Admin/Bikes/Edit/5
+        [Authentication]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Bike == null)
@@ -92,7 +201,8 @@ namespace webbanxe.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdBike,NameBike,price,PricePromotion,Quantity,ImageBike,DescriptionBike,IdType")] Bike bike)
+        [Authentication]
+        public async Task<IActionResult> Edit(int id, [Bind("IdBike,NameBike,price,PricePromotion,Quantity,bike.ImageBike,DescriptionBike,IdType")] Bike bike)
         {
             if (id != bike.IdBike)
             {
@@ -124,6 +234,7 @@ namespace webbanxe.Areas.Admin.Controllers
         }
 
         // GET: Admin/Bikes/Delete/5
+        [Authentication]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Bike == null)

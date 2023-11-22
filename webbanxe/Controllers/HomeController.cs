@@ -91,6 +91,27 @@ namespace webbanxe.Controllers
 
                 }
             }
+
+            return View();
+        }
+
+        [Route("/{id:int}/{slug}.html"),HttpGet]
+        public IActionResult DetailBike(int? id, string slug)
+        {
+            
+            Bike bike1 = new Bike();
+            var bike = from m in _context.Bike where m.IdBike == id select m;
+
+            foreach (var item in bike)
+            {
+                bike1.IdType  = item.IdType;
+            }
+
+            var listBikeRelate = from i in _context.Bike where i.IdType== bike1.IdType select i;
+
+            ViewBag.ListBikeRelate = listBikeRelate;
+            ViewBag.Bike = bike;
+
             return View();
         }
 

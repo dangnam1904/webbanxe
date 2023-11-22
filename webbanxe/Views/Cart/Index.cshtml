@@ -1,4 +1,7 @@
-﻿@{
+﻿@model IList<webbanxe.Models.ModelView.ViewCart>
+@using webbanxe.Utilities;
+
+@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -15,22 +18,35 @@
                             <tr>
                                
                                 <th>STT</th>
+                                <th style="display: none !important;">IdCart</th>
                                 <th>Tên xe</th>
                                 <th>Số lượng</th>
                                 <th> Giá thành</th>
                                 <th>Thành tiền</th>
                                 <th>Hành động</th>
+                                <th></th>
                             </tr>
-                            @foreach (var item in ViewBag.ListCart)
+                            @for (var i =0; i < Model.Count; i++)
                             {
 
                                 <tr>
-                                    <td>@item.Cart.IdCart</td>
-                                    <td>@item.Bike.NameBike</td>
-                                    <td> <input value="@item.Cart.QuantityPurchased" name="QuantityPurchased" id="QuantityPurchased" type="number" onchange="changeNumber()"> </td>
-                                    <td id="price">@((item.Bike.price * item.Bike.PricePromotion)) vnđ</td>
-                                    <td id="thanhtien">@((item.Bike.price * item.Bike.PricePromotion).ToString("#,##0.0")) vnđ</td>
-                                    <td> <a href="#"> Lưu </a> &ensp; <a href="#"> Xóa  &ensp; <a href="#"> Thanh toán </a></td>
+
+                                    <td>
+                                        @{
+                                            int index = 1;
+                                            index = index + i;
+                                            @index
+                                        }
+                                    </td>
+                                    <td style="display: none !important;"> @Model[i].Cart.IdCart</td>
+                                     <td>@Model[i].Bike.NameBike</td>
+                                    <td> <input value="@Model[i].Cart.QuantityPurchased" name="QuantityPurchased" id="QuantityPurchased" type="number" onchange="changeNumber()"> </td>
+                                    <td id="price">@((Model[i].Bike.price * Model[i].Bike.PricePromotion)) vnđ</td>
+                                    <td id="thanhtien">@((Model[i].Bike.price * Model[i].Bike.PricePromotion).ToString("#,##0.0")) vnđ</td>
+                                    @{
+                                        string url = Functions.TitleSlugGenerationReves("", Model[i].Bike.IdBike, Model[i].Bike.NameBike);
+                                    }
+                                    <td> <a href="~/cart/@Model[i].Cart.IdCart?action=update"> Lưu </a> &ensp; <a href="~/cart/@Model[i].Cart.IdCart?action=delete"> Xóa  </a> &ensp; <a href="~/@url"> Xem xe </a></td>
                                 </tr>
                             }
                         </table>
@@ -39,6 +55,7 @@
 
             </div>
         </div>
+    </div>
     </div>
     <script>
         function changeNumber() {

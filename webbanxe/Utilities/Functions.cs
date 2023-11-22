@@ -11,6 +11,12 @@ namespace webbanxe.Utilities
             return sTitle;
         }
 
+        public static string TitleSlugGenerationReves(string type,long id, string title)
+        {
+            string sTitle = type + id.ToString() +"/" + SlugGenerator.SlugGenerator.GenerateSlug(title)   + ".html";
+            return sTitle;
+        }
+
 
         public static string RemoveUnicode(string text)
         {

@@ -53,20 +53,20 @@
 
             @if (@httpContextAccessor.HttpContext.Session.GetString("username") != null)
             {
-                <a href="./account/logout" class="btn btn-primary">
+                <a href="~/account/logout" class="btn btn-primary">
                     Đăng xuất
                 </a>
             }
             else
             {
-                  <a href="./account/login" class="btn btn-primary">
+                  <a href="~/account/login" class="btn btn-primary">
                     Đăng nhập
                 </a>
             }
 
             @if (@httpContextAccessor.HttpContext.Session.GetString("username") != null)
             {
-                <a href="./cart" class="btn btn-primary" style="margin-left:20px">
+                <a href="~/cart" class="btn btn-primary" style="margin-left:20px">
                     Giỏ hàng
                 </a>
             }

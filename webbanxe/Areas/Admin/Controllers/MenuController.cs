@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using webbanxe.Data;
+using webbanxe.Models.Authentications;
 
 namespace webbanxe.Areas.Admin.Controllers
 {
@@ -11,6 +12,7 @@ namespace webbanxe.Areas.Admin.Controllers
         {
             _context = context;
         }
+        [Authentication]
         public IActionResult Index()
         {
             var mnList = _context.Menus.OrderBy(m=>m.MenuID).ToList();
