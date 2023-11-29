@@ -21,7 +21,7 @@ namespace webbanxe.Data
         public DbSet<TypeBike> TypeBike { get; set; }
         public DbSet<Bike> Bike { get; set; }
         public DbSet<Cart> Carts { get; set; }
-       
-     
+        public DbSet<Order> Order { get; set; }
+
     }
 }

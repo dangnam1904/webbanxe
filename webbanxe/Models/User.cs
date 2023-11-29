@@ -40,5 +40,6 @@ namespace webbanxe.Models
 
         public virtual List<Cart> Cart { get; set; }
 
+
     }
 }

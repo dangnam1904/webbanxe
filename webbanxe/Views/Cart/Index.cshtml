@@ -40,13 +40,13 @@
                                     </td>
                                     <td style="display: none !important;"> @Model[i].Cart.IdCart</td>
                                      <td>@Model[i].Bike.NameBike</td>
-                                    <td> <input value="@Model[i].Cart.QuantityPurchased" name="QuantityPurchased" id="QuantityPurchased" type="number" onchange="changeNumber()"> </td>
+                                    <td> @Model[i].Cart.QuantityPurchased </td>
                                     <td id="price">@((Model[i].Bike.price * Model[i].Bike.PricePromotion)) vnđ</td>
-                                    <td id="thanhtien">@((Model[i].Bike.price * Model[i].Bike.PricePromotion).ToString("#,##0.0")) vnđ</td>
+                                    <td id="thanhtien">@((Model[i].Bike.price * Model[i].Bike.PricePromotion* Model[i].Cart.QuantityPurchased).ToString("#,##0.0")) vnđ</td>
                                     @{
                                         string url = Functions.TitleSlugGenerationReves("", Model[i].Bike.IdBike, Model[i].Bike.NameBike);
                                     }
-                                    <td> <a href="~/cart/@Model[i].Cart.IdCart?action=update"> Lưu </a> &ensp; <a href="~/cart/@Model[i].Cart.IdCart?action=delete"> Xóa  </a> &ensp; <a href="~/@url"> Xem xe </a></td>
+                                    <td> <a href="~/cart/update/@Model[i].Cart.IdCart"> Sửa </a> &ensp; <a href="~/cart/delete/@Model[i].Cart.IdCart"> Xóa  </a> &ensp; <a href="~/@url"> Xem xe </a> &ensp; <a href="~/orders/create/@Model[i].Cart.IdCart"> Đặt hàng </a></td>
                                 </tr>
                             }
                         </table>

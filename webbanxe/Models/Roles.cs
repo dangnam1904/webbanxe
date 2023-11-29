@@ -6,8 +6,6 @@ namespace webbanxe.Models
 {
     public class Roles
     {
-       
-
         public Roles()
         {
         }

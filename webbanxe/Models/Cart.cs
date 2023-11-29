@@ -15,6 +15,5 @@ namespace webbanxe.Models
         [ForeignKey(nameof(User))]
         public int IdUser {  get; set; }
         public virtual User User { get; set; }
-
     }
 }

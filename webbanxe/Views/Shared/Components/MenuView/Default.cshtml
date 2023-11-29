@@ -49,27 +49,28 @@
                     }
                 }
             </div>
-            <button type="button" class="btn text-primary ms-3" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="fa fa-search"></i></button>
-
             @if (@httpContextAccessor.HttpContext.Session.GetString("username") != null)
             {
-                <a href="~/account/logout" class="btn btn-primary">
-                    Đăng xuất
-                </a>
+                <div class="dropdown" style="margin-left:20px">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Xin chào, @httpContextAccessor.HttpContext.Session.GetString("username")
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="~/orders">Đơn hàng</a>
+                        <a class="dropdown-item" href="~/cart"> Giỏ hàng</a>
+                        <a class="dropdown-item" href="~/account/logout"> Đăng xuất</a>
+                    </div>
+                </div>
             }
+           
             else
             {
-                  <a href="~/account/login" class="btn btn-primary">
+                  <a href="~/account/login" style="margin-left:20px" class="btn btn-primary">
                     Đăng nhập
                 </a>
             }
 
-            @if (@httpContextAccessor.HttpContext.Session.GetString("username") != null)
-            {
-                <a href="~/cart" class="btn btn-primary" style="margin-left:20px">
-                    Giỏ hàng
-                </a>
-            }
+           
             
               
          
