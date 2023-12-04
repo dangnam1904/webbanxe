@@ -24,27 +24,29 @@ namespace webbanxe.Models.Authentications
                 }
                 else
                 {
-                    if (Int32.Parse(context.HttpContext.Session.GetString("role")) != ROLE_ADMIN)
-                    {
-                        context.Result = new RedirectToRouteResult(
+                    context.Result =
+                    new RedirectToRouteResult(
 
-                        new RouteValueDictionary
-                        {
-                        {"Controller","Account" },
-                        {"Action","Login" }
-                        });
-                    }
-                    else
-                    {
-                        context.Result = new RedirectToRouteResult(
-
-                                 new RouteValueDictionary
-                                       {
-                                        {"Controller","Account" },
-                                        {"Action","Login" }
-                                  });
-                    }
+                           new RouteValueDictionary
+                                 {
+                                     {"Controller","Account" },
+                                     {"Action","Login" }
+                            });
                 }
+            }
+            else
+            {
+                if (Int32.Parse(context.HttpContext.Session.GetString("role")) != ROLE_ADMIN)
+                {
+                    context.Result = new RedirectToRouteResult(
+
+                    new RouteValueDictionary
+                    {
+                        {"Controller","Home" },
+                        {"Action","Index" }
+                    });
+                }
+                
             }
         }
     }

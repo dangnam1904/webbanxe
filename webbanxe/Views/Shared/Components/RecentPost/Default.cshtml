@@ -9,10 +9,10 @@
     </div>
     @foreach (var item in Model)
     {
-        string url = Functions.TitleSlugGeneration("post", item.Title, item.PostID);
+        string url = Functions.TitleSlugGeneration("", item.Title, item.PostID);
         <div class="d-flex rounded overflow-hidden mb-3">
-            <img class="img-fluid" src="img/blog-1.jpg" style="width: 100px; height: 100px; object-fit: cover;" alt="">
-            <a href="/@url" class="h5 fw-semi-bold d-flex align-items-center bg-light px-3 mb-0">@item.Title</a>
+            <img class="img-fluid" src="../img/@item.Images" style="width: 100px; height: 100px; object-fit: cover;" alt="">
+            <a href="/post/@url" class="h5 fw-semi-bold d-flex align-items-center bg-light px-3 mb-0">@item.Title</a>
         </div>
     }
 </div>

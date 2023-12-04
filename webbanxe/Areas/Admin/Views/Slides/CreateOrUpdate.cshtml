@@ -1,0 +1,42 @@
+﻿@model webbanxe.Models.Slide
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/Layout.cshtml";
+}
+<h1>Create</h1>
+
+<h4>Slide</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateOrUpdate" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="Id" class="form-control" type="hidden" />
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SloganTitle" class="control-label"></label>
+                <input asp-for="SloganTitle" class="form-control" />
+                <span asp-validation-for="SloganTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NameImg" class="control-label"></label>
+                <input asp-for="ImageFile" type="file" accept="image/*" class="form-control" />
+                <span asp-validation-for="NameImg" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

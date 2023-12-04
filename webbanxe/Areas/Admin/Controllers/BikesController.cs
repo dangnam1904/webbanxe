@@ -21,6 +21,7 @@ namespace webbanxe.Areas.Admin.Controllers
         private readonly DataContext _context;
         private readonly ILogger<HomeController> _logger;
         private readonly IWebHostEnvironment _hostEnvironment;
+        
 
 
         public BikesController(DataContext context, ILogger<HomeController> logger, IWebHostEnvironment hostEnvironment)
@@ -101,8 +102,6 @@ namespace webbanxe.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-
                 if (viewBike.Bike.IdBike == 0)
                 {
                     if (viewBike.Bike.ImageFile != null)

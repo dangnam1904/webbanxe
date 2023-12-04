@@ -50,6 +50,7 @@ namespace webbanxe.Areas.Admin.Controllers
         }
 
         // GET: Admin/TypeBikes/Create
+        [Authentication]
         public IActionResult Create()
         {
             return View();
@@ -69,6 +70,7 @@ namespace webbanxe.Areas.Admin.Controllers
         }
 
         // GET: Admin/TypeBikes/Edit/5
+        [Authentication]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.TypeBike == null)

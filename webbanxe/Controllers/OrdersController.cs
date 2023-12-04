@@ -70,6 +70,7 @@ namespace webbanxe.Controllers
 
             var order = await _context.Order
                 .FirstOrDefaultAsync(m => m.IdOrder == id);
+            
                 
             if (order == null)
             {
@@ -77,8 +78,12 @@ namespace webbanxe.Controllers
             }
             else
             {
+                var cart = await _context.Carts.FirstOrDefaultAsync(m => m.IdCart == order.idCart);
+                var bike = await _context.Bike.FirstOrDefaultAsync(m => m.IdBike == cart.IdBike);
+                bike.Quantity = bike.Quantity + cart.QuantityPurchased;
                 order.OrderStatus = STATUS_CANCEL;
                 _context.Order.Update(order);
+                _context.Bike.Update(bike);
                 _context.SaveChanges();
             }
 
@@ -144,6 +149,7 @@ namespace webbanxe.Controllers
                     order.OrderStatus = STATUS_ORDER_SUCCESS;
                     order.Address = "";
                     order.NumberPhone = user.Phone;
+                  
                     return View(order);
                  }
             }
@@ -161,7 +167,10 @@ namespace webbanxe.Controllers
             {
                 _context.Add(order);
                 var cart = await _context.Carts.FindAsync(order.idCart);
-             
+                int idbike = cart.IdBike;
+                var bike= await _context.Bike.FindAsync(cart.IdBike);
+                bike.Quantity = bike.Quantity - cart.QuantityPurchased;
+                _context.Bike.Update(bike);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using webbanxe.Data;
 using webbanxe.Models;
@@ -17,9 +18,10 @@ namespace webbanxe.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var listSlide = await _context.Slides.ToListAsync();
+            return View(listSlide);
         }
 
         public IActionResult Privacy()
@@ -28,7 +30,7 @@ namespace webbanxe.Controllers
         }
 
 
-        [Route("/post-{slug}-{id:long}.html", Name = "Details")]
+        [Route("/post/{slug}-{id:long}.html", Name = "Details")]
         public IActionResult Details(long? id)
         {
 
@@ -48,8 +50,6 @@ namespace webbanxe.Controllers
         [Route("/{slug}-{id:int}.html")]
         public IActionResult List(int? id, string slug, [FromQuery] string search)
         {
-
-            string s = search;
            
             if (id == null)
             {
@@ -75,8 +75,7 @@ namespace webbanxe.Controllers
                     ViewBag.ListType = listType;
                     ViewBag.ListBike = listBike;
                 }
-                
-                return View();
+
             }
             var listType1 = from m in _context.TypeBike select m;
             foreach (var item in listType1)
@@ -91,7 +90,26 @@ namespace webbanxe.Controllers
 
                 }
             }
-
+            if (slug.Equals("tin-tuc"))
+            {
+                if (search == null || search.Equals(""))
+                {
+                    var listPost = from m in _context.Posts select m;
+                    ViewBag.ListPost = listPost;
+                }
+                else
+                {
+                   
+                    var listPost = from n in _context.Posts where n.Title.Contains(search) select n;
+                    ViewBag.ListPost = listPost;
+                    
+                  
+                }
+                //var listPostCurent = (from n in _context.Posts orderby n.CreatedDate ascending select n).Take(3);
+                //ViewBag.ListPostCurrent = listPostCurent;
+            }
+            var listPostCurent = (from n in _context.Posts orderby n.CreatedDate ascending select n).Take(3);
+            ViewBag.ListPostCurrent = listPostCurent;
             return View();
         }
 
