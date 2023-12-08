@@ -5,7 +5,22 @@
     Layout = "~/Areas/Admin/Views/Shared/Layout.cshtml";
 }
 <h1>Delete</h1>
+<main id="main" class="main">
 
+    <div class="pagetitle">
+        <h1>Slide</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a>Home</a></li>
+                <li class="breadcrumb-item"><a>Post</a></li>
+                <li class="breadcrumb-item active">Add </li>
+            </ol>
+        </nav>
+    </div>
+    
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-md-12">
 <h3>Are you sure you want to delete this?</h3>
 <div>
     <h4>Slide</h4>
@@ -37,3 +52,7 @@
         <a asp-action="Index">Back to List</a>
     </form>
 </div>
+</div>
+</div>
+</section>
+</main>
