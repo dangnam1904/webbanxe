@@ -98,7 +98,7 @@ namespace webbanxe.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authentication]
-        public IActionResult CreateOrUpdate(ViewBike viewBike)
+        public async Task<IActionResult> CreateOrUpdate(ViewBike viewBike)
         {
             if (ModelState.IsValid)
             {
@@ -130,6 +130,9 @@ namespace webbanxe.Areas.Admin.Controllers
                 }
                 else
                 {
+
+                    var oldBike = await _context.Bike.FindAsync(viewBike.Bike.IdBike);
+
                     if (viewBike.Bike.ImageFile != null)
                     {
                         string imageBike = "";
@@ -150,21 +153,19 @@ namespace webbanxe.Areas.Admin.Controllers
                             }
                         }
                         viewBike.Bike.ImageBike = imageBike.TrimEnd(';');
-                    }
 
-                    var oldBike = from m in _context.Bike where m.IdBike == viewBike.Bike.IdBike select m;
-                    
-                    Bike bike1 = new Bike();
-                    foreach (var item in oldBike)
-                    {
-                       bike1.ImageBike =  item.ImageBike;
+                        string oldImg = oldBike.ImageBike;
+                        foreach (var item in oldImg.Split(";"))
+                        {
+                            System.IO.File.Delete(Path.Combine
+                                (Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img"), item));
+                        }
                     }
-                    string oldImg = bike1.ImageBike;
-                    foreach (var item in oldImg.Split(";"))
+                    else
                     {
-                        System.IO.File.Delete(Path.Combine
-                            (Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img"), item));
+                         viewBike.Bike.ImageBike = oldBike.ImageBike;
                     }
+                   
                     _context.Bike.Update(viewBike.Bike);
                 }
                 _context.SaveChanges();

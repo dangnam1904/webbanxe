@@ -44,6 +44,7 @@ namespace webbanxe.Models
 
         [NotMapped]
         [DisplayName("Upload File")]
+        [ValidateNever]
         public List<IFormFile> ImageFile { get; set; }
     }
 }
