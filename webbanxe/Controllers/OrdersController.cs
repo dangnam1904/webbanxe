@@ -43,6 +43,19 @@ namespace webbanxe.Controllers
                              Bike = b,
                              User= u
                          };
+
+            var result1 = from o in _context.Order
+                         join c in _context.Carts on o.idCart equals c.IdCart
+                         join b in _context.Accessaries on c.IdAccessary equals b.IdAccessary
+                         join u in _context.Users on c.IdUser equals u.IdUser
+                         where c.IdUser == Int32.Parse(HttpContext.Session.GetString("idUser"))
+                         select new
+                         {
+                             Order = o,
+                             Cart = c,
+                             Accessary = b,
+                             User = u
+                         };
             List<ViewOrder> listViewOrder = new List<ViewOrder>();
             if (result != null)
             {
@@ -56,6 +69,19 @@ namespace webbanxe.Controllers
                     listViewOrder.Add(viewCart);
                 }
             }
+            if (result1 != null)
+            {
+                foreach (var i in result1)
+                {
+                    ViewOrder viewCart = new ViewOrder();
+                    viewCart.Cart = i.Cart;
+                    viewCart.User = i.User;
+                    viewCart.Accessary = i.Accessary;
+                    viewCart.Order = i.Order;
+                    listViewOrder.Add(viewCart);
+                }
+            }
+            var a = listViewOrder;
             return View(listViewOrder);
         }
 
@@ -167,10 +193,20 @@ namespace webbanxe.Controllers
             {
                 _context.Add(order);
                 var cart = await _context.Carts.FindAsync(order.idCart);
-                int idbike = cart.IdBike;
+               
                 var bike= await _context.Bike.FindAsync(cart.IdBike);
-                bike.Quantity = bike.Quantity - cart.QuantityPurchased;
-                _context.Bike.Update(bike);
+                var accessary = await _context.Accessaries.FindAsync(cart.IdAccessary);
+                if (bike != null)
+                {
+                    bike.Quantity = bike.Quantity - cart.QuantityPurchased; 
+                    _context.Bike.Update(bike);
+                }
+                if (accessary != null)
+                {
+                    accessary.Quantity = accessary.Quantity - cart.QuantityPurchased;
+                    _context.Accessaries.Update(accessary);
+                }
+               
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

@@ -43,44 +43,93 @@
                                     <td style="display: none !important;"> @Model[i].Order.IdOrder</td>
                                     <td>@Model[i].Order.NumberPhone</td>
                                     <td>@Model[i].Order.Address</td>
-                                    <td>@Model[i].Bike.NameBike</td>
-                                    <td id="thanhtien">@((Model[i].Bike.price * Model[i].Bike.PricePromotion * Model[i].Cart.QuantityPurchased).ToString("#,##0.0")) vnđ</td>
-                                    <td>@{
-                                            const int STATUS_ORDER_SUCCESS = 0;
-                                            const int STATUS_CANCEL = 3;
-                                            const int STATUS_PAYMENT = 2;
-                                       
-                                            if (@Model[i].Order.OrderStatus == STATUS_ORDER_SUCCESS)
-                                            {
-                                                <p> Đặt hàng thành công</p>
-                                            }
-                                            if (@Model[i].Order.OrderStatus == STATUS_CANCEL)
-                                            {
-                                                <p> Đã hủy</p>
-                                            }
+                                    @if(Model[i].Bike != null)
+                                    {
+                                        <td>@Model[i].Bike.NameBike</td>
+                                        <td id="thanhtien">@((Model[i].Bike.price-(Model[i].Bike.price * Model[i].Bike.PricePromotion) * Model[i].Cart.QuantityPurchased).ToString("#,##0.0")) vnđ</td>
+                                        <td>
+                                            @{
+                                                const int STATUS_ORDER_SUCCESS = 0;
+                                                const int STATUS_CANCEL = 3;
+                                                const int STATUS_PAYMENT = 2;
 
-                                            if (@Model[i].Order.OrderStatus == STATUS_PAYMENT)
-                                            {
-                                                <p> Đã thanh toán</p>
+                                                if (@Model[i].Order.OrderStatus == STATUS_ORDER_SUCCESS)
+                                                {
+                                                    <p> Đặt hàng thành công</p>
+                                                }
+                                                if (@Model[i].Order.OrderStatus == STATUS_CANCEL)
+                                                {
+                                                    <p> Đã hủy</p>
+                                                }
+
+                                                if (@Model[i].Order.OrderStatus == STATUS_PAYMENT)
+                                                {
+                                                    <p> Đã thanh toán</p>
+                                                }
                                             }
-                                    }</td>
-                                    <td>
-                                      @{
-                                        if (@Model[i].Order.OrderStatus == STATUS_ORDER_SUCCESS)
-                                        {
-                                          <div>
-                                        <a asp-action="Details" asp-route-id="@Model[i].Order.IdOrder">Chi tiết</a> |
-                                        <a asp-action="Delete" asp-route-id="@Model[i].Order.IdOrder">Xóa</a>|
-                                        <a asp-action="Cancal-Order" asp-route-id="@Model[i].Order.IdOrder">Hủy đơn</a>|
-                                        <a asp-action="Payment-Order" asp-route-id="@Model[i].Order.IdOrder">Thanh toán</a>
-                                         </div>
-                                        }
-                                        if (@Model[i].Order.OrderStatus == STATUS_PAYMENT)
-                                        {
-                                       
-                                        }
-                                       }
-                                    </td>
+                                        </td>
+                                        <td>
+                                            @{
+                                                if (@Model[i].Order.OrderStatus == STATUS_ORDER_SUCCESS)
+                                                {
+                                                    <div>
+                                                        <a asp-action="Details" asp-route-id="@Model[i].Order.IdOrder">Chi tiết</a> |
+                                                        <a asp-action="Delete" asp-route-id="@Model[i].Order.IdOrder">Xóa</a>|
+                                                        <a asp-action="Cancal-Order" asp-route-id="@Model[i].Order.IdOrder">Hủy đơn</a>|
+                                                        <a asp-action="Payment-Order" asp-route-id="@Model[i].Order.IdOrder">Thanh toán</a>
+                                                    </div>
+                                                }
+                                                if (@Model[i].Order.OrderStatus == STATUS_PAYMENT)
+                                                {
+
+                                                }
+                                            }
+                                        </td>
+                                    }
+
+                                    @if(Model[i].Accessary != null)
+                                    {
+                                        <td>@Model[i].Accessary.NameAccessary</td>
+                                        <td id="thanhtien">@((Model[i].Accessary.Price-(Model[i].Accessary.Price * Model[i].Accessary.PricePromotion) * Model[i].Cart.QuantityPurchased).ToString("#,##0.0")) vnđ</td>
+                                        <td>
+                                            @{
+                                                const int STATUS_ORDER_SUCCESS = 0;
+                                                const int STATUS_CANCEL = 3;
+                                                const int STATUS_PAYMENT = 2;
+
+                                                if (@Model[i].Order.OrderStatus == STATUS_ORDER_SUCCESS)
+                                                {
+                                                    <p> Đặt hàng thành công</p>
+                                                }
+                                                if (@Model[i].Order.OrderStatus == STATUS_CANCEL)
+                                                {
+                                                    <p> Đã hủy</p>
+                                                }
+
+                                                if (@Model[i].Order.OrderStatus == STATUS_PAYMENT)
+                                                {
+                                                    <p> Đã thanh toán</p>
+                                                }
+                                            }
+                                        </td>
+                                        <td>
+                                            @{
+                                                if (@Model[i].Order.OrderStatus == STATUS_ORDER_SUCCESS)
+                                                {
+                                                    <div>
+                                                        <a asp-action="Details" asp-route-id="@Model[i].Order.IdOrder">Chi tiết</a> |
+                                                        <a asp-action="Delete" asp-route-id="@Model[i].Order.IdOrder">Xóa</a>|
+                                                        <a asp-action="Cancal-Order" asp-route-id="@Model[i].Order.IdOrder">Hủy đơn</a>|
+                                                        <a asp-action="Payment-Order" asp-route-id="@Model[i].Order.IdOrder">Thanh toán</a>
+                                                    </div>
+                                                }
+                                                if (@Model[i].Order.OrderStatus == STATUS_PAYMENT)
+                                                {
+
+                                                }
+                                            }
+                                            </td>
+                                            }
                                 </tr>
                             }
                         </table>

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using webbanxe.Data;
 using webbanxe.Models;
 using webbanxe.Models.Authentications;
+using webbanxe.Utilities;
 
 namespace webbanxe.Areas.Admin.Controllers
 {
@@ -77,19 +78,7 @@ namespace webbanxe.Areas.Admin.Controllers
                 {
                     if (slide.ImageFile != null)
                     {
-                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img");
-
-                        //create folder if not exist
-                        if (!Directory.Exists(path))
-                            Directory.CreateDirectory(path);
-
-                        string fileNameWithPath = Path.Combine(path, slide.ImageFile.FileName);
-
-                        using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                        {
-                            slide.ImageFile.CopyTo(stream);
-                        }
-                        slide.NameImg = slide.ImageFile.FileName;
+                        slide.NameImg =   Functions.saveSingleImage(slide.ImageFile);
                         _context.Slides.Add(slide);
                     }
                 }
@@ -100,22 +89,8 @@ namespace webbanxe.Areas.Admin.Controllers
 
                     if (slide.ImageFile != null)
                     {
-                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img");
-
-                        //create folder if not exist
-                        if (!Directory.Exists(path))
-                            Directory.CreateDirectory(path);
-
-                        string fileNameWithPath = Path.Combine(path, slide.ImageFile.FileName);
-
-                        using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                        {
-                            slide.ImageFile.CopyTo(stream);
-                        }
-
-                        slide.NameImg = slide.ImageFile.FileName;
-                        System.IO.File.Delete(Path.Combine
-                            (Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img"), oldSlide.NameImg));
+                        slide.NameImg = Functions.saveSingleImage(slide.ImageFile);
+                        Functions.deleteSingleImage(oldSlide.NameImg);
                     }
                     else
                     {
@@ -161,8 +136,7 @@ namespace webbanxe.Areas.Admin.Controllers
             }
             var slide = await _context.Slides.FindAsync(id);
 
-            System.IO.File.Delete(Path.Combine
-                (Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img"), slide.NameImg));
+            Functions.deleteSingleImage(slide.NameImg);
             if (slide != null)
             {
                 _context.Slides.Remove(slide);

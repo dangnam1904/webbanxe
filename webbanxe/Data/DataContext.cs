@@ -6,7 +6,7 @@ namespace webbanxe.Data
 {
     public class DataContext : DbContext
     {
-      
+
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -23,6 +23,7 @@ namespace webbanxe.Data
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<Slide> Slides { get; set; }
+        public DbSet<Accessary> Accessaries {get;set;}
 
     }
 }

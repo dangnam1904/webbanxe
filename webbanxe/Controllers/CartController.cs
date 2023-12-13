@@ -22,29 +22,36 @@ namespace webbanxe.Controllers
         {
             if (HttpContext.Session.GetString("idUser") != null)
             {
-                //var idUser = Int32.Parse(HttpContext.Session.GetString("idUser"));
-                //var listCarrt=  _context.Carts.FromSql($"select * FROM Carts c join Bike b on c.IdBike= b.IdBike join Users u on u.IdUser = c.IdUser WHERE c.IdUser = {idUser} and  IdCart NOT IN (SELECT idCart  FROM [Order] )").ToList();
-               
-                var listCart2 = from cart in _context.Carts
-                               join
-                              user in _context.Users on cart.IdUser equals user.IdUser
-                               join
-                               bike in _context.Bike on cart.IdBike equals bike.IdBike
-                               where (cart.IdUser == Int32.Parse(HttpContext.Session.GetString("idUser"))
-                               
-                               )
-                               select new
-                               {
-                                   Cart = cart,
-                                   User = user,
-                                   Bike = bike
-                               };
+                var idUser = Int32.Parse(HttpContext.Session.GetString("idUser"));
+                var listCart2 = from c in _context.Carts
+                                join
+                                u in _context.Users on c.IdUser equals u.IdUser
+                                join b in _context.Bike on c.IdBike equals b.IdBike
+                                where c.IdUser == idUser
+                                select new
+                                {
+                                    Cart = c,
+                                    Bike = b,
+                                    User = u
+                                };
+                
+                var listCart1 = from c in _context.Carts
+                                join
+                                u in _context.Users on c.IdUser equals u.IdUser
+                                join b in _context.Accessaries on c.IdAccessary equals b.IdAccessary
+                                where c.IdUser == idUser
+                                select new
+                                {
+                                    Cart = c,
+                                    Accessary = b,
+                                    User = u
+                                };
                 var listOrder = from i in _context.Order.ToList() select i;
                 List<ViewCart> listViewCart = new List<ViewCart>();
-          
+
                 if (listCart2 != null)
                 {
-                 foreach (var i in listCart2)
+                    foreach (var i in listCart2)
                     {
                         ViewCart viewCart = new ViewCart();
                         viewCart.Cart = i.Cart;
@@ -54,7 +61,7 @@ namespace webbanxe.Controllers
 
                         foreach (var item in listOrder)
                         {
-                            
+
                             if (i.Cart.IdCart == item.idCart)
                             {
                                 listViewCart.Remove(viewCart);
@@ -62,8 +69,32 @@ namespace webbanxe.Controllers
                             }
                         }
                     }
-                    
+
                 }
+
+                if (listCart1 != null)
+                {
+                    foreach (var i in listCart1)
+                    {
+                        ViewCart viewCart = new ViewCart();
+                        viewCart.Cart = i.Cart;
+                        viewCart.User = i.User;
+                        viewCart.Accessary = i.Accessary;
+                        listViewCart.Add(viewCart);
+
+                        foreach (var item in listOrder)
+                        {
+
+                            if (i.Cart.IdCart == item.idCart)
+                            {
+                                listViewCart.Remove(viewCart);
+                                break;
+                            }
+                        }
+                    }
+
+                }
+                var a = listViewCart;
                 return View(listViewCart);
             }
             else
@@ -73,7 +104,8 @@ namespace webbanxe.Controllers
         }
 
         [Route("/add-to-cart/{idBike:int}.html")]
-        public IActionResult actionResult([FromRoute] int idBike)
+        [Route("/add-to-cart-accesary/{idAccesary:int}.html")]
+        public IActionResult actionResult([FromRoute] int idBike, int idAccesary)
         {
             if (HttpContext.Session.GetString("idUser") != null)
             {

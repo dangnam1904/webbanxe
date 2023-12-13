@@ -6,6 +6,8 @@
     Layout = "~/Areas/Admin/Views/Shared/Layout.cshtml";
 }
 
+<script src="~/ckeditor/ckeditor.js"></script> 
+
 <main id="main" class="main">
 
     <div class="pagetitle">
@@ -14,7 +16,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a>Home</a></li>
                 <li class="breadcrumb-item"><a>Bike</a></li>
-                <li class="breadcrumb-item active">Add/li>
+                <li class="breadcrumb-item active">Add</li>
             </ol>
         </nav>
     </div>
@@ -23,13 +25,11 @@
     </div>
     <section class="section dashboard">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <form asp-action="CreateOrUpdate" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                      
                         <input asp-for="Bike.IdBike" type="hidden" class="form-control" />
-                      
                     </div>
                     <div class="form-group">
                         <label asp-for="Bike.NameBike" class="control-label"></label>
@@ -58,8 +58,12 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Bike.DescriptionBike" class="control-label"></label>
-                        <input asp-for="Bike.DescriptionBike" class="form-control" />
+                        <textarea asp-for="Bike.DescriptionBike" class="form-control" ></textarea>
                         <span asp-validation-for="Bike.DescriptionBike" class="text-danger"></span>
+                        <script>
+                            CKEDITOR.replace("Bike.DescriptionBike");
+                        </script>
+
                     </div>
                     <div class="form-group">
                         <label class="control-label">Loại xe</label>
@@ -67,6 +71,7 @@
                             <option disabled onselect=""> Chọn loại </option>
                         </select>
                     </div>
+                
                     <div class="form-group">
                         <input type="submit" value="Save" class="btn btn-primary" />
                     </div>
@@ -74,6 +79,8 @@
             </div>
         </div>
     </section>
+
+   
 </main>
 
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webbanxe.Data;
 
@@ -11,9 +12,11 @@ using webbanxe.Data;
 namespace webbanxe.Data.migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231211155417_add-accessaries")]
+    partial class addaccessaries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -454,8 +457,6 @@ namespace webbanxe.Data.migrations
 
             modelBuilder.Entity("webbanxe.Models.Cart", b =>
                 {
-                    
-
                     b.HasOne("webbanxe.Models.Bike", "Bike")
                         .WithMany()
                         .HasForeignKey("IdBike")
@@ -467,8 +468,6 @@ namespace webbanxe.Data.migrations
                         .HasForeignKey("IdUser")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                  
 
                     b.Navigation("Bike");
 
@@ -496,8 +495,6 @@ namespace webbanxe.Data.migrations
 
                     b.Navigation("Roles");
                 });
-
-            
 
             modelBuilder.Entity("webbanxe.Models.Menu", b =>
                 {

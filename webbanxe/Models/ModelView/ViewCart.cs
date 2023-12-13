@@ -7,5 +7,6 @@
         public Bike Bike { get; set; }
 
         public User User { get; set; } 
+        public Accessary Accessary { get; set;}
     }
 }

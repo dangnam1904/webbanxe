@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webbanxe.Data;
 
@@ -11,9 +12,11 @@ using webbanxe.Data;
 namespace webbanxe.Data.migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231211155752_addFKcessaries")]
+    partial class addFKcessaries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,6 +153,9 @@ namespace webbanxe.Data.migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCart"));
 
+                    b.Property<int>("IdAccessary")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdBike")
                         .HasColumnType("int");
 
@@ -160,6 +166,8 @@ namespace webbanxe.Data.migrations
                         .HasColumnType("int");
 
                     b.HasKey("IdCart");
+
+                    b.HasIndex("IdAccessary");
 
                     b.HasIndex("IdBike");
 
@@ -454,7 +462,11 @@ namespace webbanxe.Data.migrations
 
             modelBuilder.Entity("webbanxe.Models.Cart", b =>
                 {
-                    
+                    b.HasOne("webbanxe.Models.Accessary", "Accessary")
+                        .WithMany("Cart")
+                        .HasForeignKey("IdAccessary")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("webbanxe.Models.Bike", "Bike")
                         .WithMany()
@@ -468,7 +480,7 @@ namespace webbanxe.Data.migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                  
+                    b.Navigation("Accessary");
 
                     b.Navigation("Bike");
 
@@ -497,7 +509,10 @@ namespace webbanxe.Data.migrations
                     b.Navigation("Roles");
                 });
 
-            
+            modelBuilder.Entity("webbanxe.Models.Accessary", b =>
+                {
+                    b.Navigation("Cart");
+                });
 
             modelBuilder.Entity("webbanxe.Models.Menu", b =>
                 {

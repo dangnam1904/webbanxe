@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace webbanxe.Models
 {
@@ -15,5 +16,6 @@ namespace webbanxe.Models
         [ForeignKey(nameof(User))]
         public int IdUser {  get; set; }
         public virtual User User { get; set; }
+        public int IdAccessary { get; set; }    
     }
 }

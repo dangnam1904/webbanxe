@@ -12,6 +12,7 @@ using webbanxe.Data;
 using webbanxe.Models;
 using webbanxe.Models.Authentications;
 using webbanxe.Models.ModelView;
+using webbanxe.Utilities;
 
 namespace webbanxe.Areas.Admin.Controllers
 {
@@ -106,24 +107,7 @@ namespace webbanxe.Areas.Admin.Controllers
                 {
                     if (viewBike.Bike.ImageFile != null)
                     {
-                        string imageBike = "";
-                        foreach (var file in viewBike.Bike.ImageFile)
-                        {
-                            imageBike += file.FileName + ";";
-                            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img");
-
-                            //create folder if not exist
-                            if (!Directory.Exists(path))
-                                Directory.CreateDirectory(path);
-
-                            string fileNameWithPath = Path.Combine(path, file.FileName);
-
-                            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                            {
-                                file.CopyTo(stream);
-                            }
-                        }
-                        viewBike.Bike.ImageBike = imageBike.TrimEnd(';');
+                        viewBike.Bike.ImageBike = Functions.saveMutiImage(viewBike.Bike.ImageFile);
                     }
                     _context.Bike.Add(viewBike.Bike);
 
@@ -135,31 +119,8 @@ namespace webbanxe.Areas.Admin.Controllers
 
                     if (viewBike.Bike.ImageFile != null)
                     {
-                        string imageBike = "";
-                        foreach (var file in viewBike.Bike.ImageFile)
-                        {
-                            imageBike += file.FileName + ";";
-                            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img");
-
-                            //create folder if not exist
-                            if (!Directory.Exists(path))
-                                Directory.CreateDirectory(path);
-
-                            string fileNameWithPath = Path.Combine(path, file.FileName);
-
-                            using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                            {
-                                file.CopyTo(stream);
-                            }
-                        }
-                        viewBike.Bike.ImageBike = imageBike.TrimEnd(';');
-
-                        string oldImg = oldBike.ImageBike;
-                        foreach (var item in oldImg.Split(";"))
-                        {
-                            System.IO.File.Delete(Path.Combine
-                                (Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img"), item));
-                        }
+                        viewBike.Bike.ImageBike = Functions.saveMutiImage(viewBike.Bike.ImageFile);
+                        Functions.deleteMutiImage(oldBike.ImageBike);
                     }
                     else
                     {
@@ -267,7 +228,7 @@ namespace webbanxe.Areas.Admin.Controllers
             {
                 _context.Bike.Remove(bike);
             }
-            
+            Functions.deleteMutiImage(bike.ImageBike);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

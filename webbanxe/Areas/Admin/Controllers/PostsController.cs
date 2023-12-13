@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using webbanxe.Data;
 using webbanxe.Models;
 using webbanxe.Models.Authentications;
+using webbanxe.Utilities;
 
 namespace webbanxe.Areas.Admin.Controllers
 {
@@ -70,19 +71,7 @@ namespace webbanxe.Areas.Admin.Controllers
                 {
                     if (post.ImageFile != null)
                     {
-                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img");
-
-                        //create folder if not exist
-                        if (!Directory.Exists(path))
-                            Directory.CreateDirectory(path);
-
-                        string fileNameWithPath = Path.Combine(path, post.ImageFile.FileName);
-
-                        using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                        {
-                            post.ImageFile.CopyTo(stream);
-                        }
-                       post.Images = post.ImageFile.FileName;
+                       post.Images = Functions.saveSingleImage(post.ImageFile);
                         post.MenuID = 1;
                         _context.Posts.Add(post);
                     }
@@ -94,22 +83,8 @@ namespace webbanxe.Areas.Admin.Controllers
 
                     if (post.ImageFile != null)
                     {
-                        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img");
-
-                        //create folder if not exist
-                        if (!Directory.Exists(path))
-                            Directory.CreateDirectory(path);
-
-                        string fileNameWithPath = Path.Combine(path, post.ImageFile.FileName);
-
-                        using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                        {
-                            post.ImageFile.CopyTo(stream);
-                        }
-
-                        post.Images = post.ImageFile.FileName;
-                        System.IO.File.Delete(Path.Combine
-                            (Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img"), oldPost.Images));
+                        post.Images = Functions.saveSingleImage(post.ImageFile);
+                        Functions.deleteSingleImage(oldPost.Images);
                     }
                     else
                     {
@@ -231,7 +206,7 @@ namespace webbanxe.Areas.Admin.Controllers
             {
                 _context.Posts.Remove(post);
             }
-            
+            Functions.deleteSingleImage(post.Images);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

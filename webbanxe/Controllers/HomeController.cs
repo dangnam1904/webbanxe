@@ -77,6 +77,25 @@ namespace webbanxe.Controllers
                 }
 
             }
+
+            if (slug.Equals("phu-kien"))
+            {
+                if (search == null || search.Equals(""))
+                {
+                   
+                    var listAccessary = from n in _context.Accessaries select n;
+                    ViewBag.ListAccessary = listAccessary;
+                   
+                }
+                else
+                {
+                    var listType = from m in _context.TypeBike select m;
+                    var listBike = from n in _context.Bike where n.NameBike.Contains(search) select n;
+                    ViewBag.ListType = listType;
+                    ViewBag.ListBike = listBike;
+                }
+
+            }
             var listType1 = from m in _context.TypeBike select m;
             foreach (var item in listType1)
             {
