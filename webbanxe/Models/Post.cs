@@ -28,7 +28,7 @@ namespace webbanxe.Models
         public DateTime CreatedDate { get; set; }
 
         [ValidateNever]
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
 
         [ValidateNever]
         public int PostOrder {  get; set; }

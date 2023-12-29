@@ -113,6 +113,7 @@ namespace webbanxe.Controllers
                 cart.IdUser = Int32.Parse(HttpContext.Session.GetString("idUser"));
                 cart.QuantityPurchased = 1;
                 cart.IdBike = idBike;
+                cart.IdAccessary = idAccesary;
                 _context.Carts.Add(cart);
                 _context.SaveChanges();
                 return RedirectToAction("Index", "Cart");

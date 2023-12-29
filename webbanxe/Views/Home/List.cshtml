@@ -62,7 +62,7 @@
 
                         @foreach (var item in ViewBag.ListAccessary)
                         {
-                            string url = Functions.TitleSlugGenerationReves("", item.IdAccessary, item.NameAccessary);
+                           
                             string image = item.ImageAccessary.Split(";")[0];
                             <div class="col-md-6 wow slideInUp" data-wow-delay="0.1s">
                                 <div class="blog-item bg-light rounded overflow-hidden">
@@ -78,7 +78,7 @@
 
                                             <small><i class="far fa-calendar-alt text-primary me-2"></i> Số lượng : @item.Quantity</small>
                                         </div>
-                                        <a class="text-uppercase" href="/@url">Xem thêm <i class="bi bi-arrow-right"></i></a>
+                                        <a class="text-uppercase" href="/@(item.IdAccessary)/phu-kien.html">Xem thêm <i class="bi bi-arrow-right"></i></a>
                                     </div>
                                 </div>
                             </div>

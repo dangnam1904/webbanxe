@@ -60,7 +60,7 @@
 
                                         string url = Functions.TitleSlugGenerationReves("", Model[i].Accessary.IdAccessary, Model[i].Accessary.NameAccessary);
 
-                                        <td> <a href="~/cart/update/@Model[i].Cart.IdCart"> Sửa </a> &ensp; <a href="~/cart/delete/@Model[i].Cart.IdCart"> Xóa  </a> &ensp; <a href="~/@url"> Xem xe </a> &ensp; <a href="~/orders/create/@Model[i].Cart.IdCart"> Đặt hàng </a></td>
+                                        <td> <a href="~/cart/update/@Model[i].Cart.IdCart"> Sửa </a> &ensp; <a href="~/cart/delete/@Model[i].Cart.IdCart"> Xóa  </a> &ensp; <a href="~/@Model[i].Cart.IdAccessary/phu-kien.html"> Xem sản phẩm </a> &ensp; <a href="~/orders/create/@Model[i].Cart.IdCart"> Đặt hàng </a></td>
                                     }
                                     
                                 </tr>

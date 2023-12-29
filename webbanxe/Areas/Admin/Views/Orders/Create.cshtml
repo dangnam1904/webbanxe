@@ -1,8 +1,8 @@
 ﻿@model webbanxe.Models.Order
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 @{
     ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/Layout.cshtml";
 }
 
 <h1>Create</h1>
@@ -23,16 +23,14 @@
                 <input asp-for="Address" class="form-control" />
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
-
             <div class="form-group">
-
-                <input asp-for="OrderStatus" class="form-control" type="hidden" />
+                <label asp-for="OrderStatus" class="control-label"></label>
+                <input asp-for="OrderStatus" class="form-control" />
                 <span asp-validation-for="OrderStatus" class="text-danger"></span>
             </div>
-
             <div class="form-group">
-             
-                <input asp-for="idCart" class="form-control"  type="hidden"/>
+                <label asp-for="idCart" class="control-label"></label>
+                <input asp-for="idCart" class="form-control" />
                 <span asp-validation-for="idCart" class="text-danger"></span>
             </div>
             <div class="form-group">

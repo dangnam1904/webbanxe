@@ -8,55 +8,49 @@ using Microsoft.EntityFrameworkCore;
 using webbanxe.Constant;
 using webbanxe.Data;
 using webbanxe.Models;
+using webbanxe.Models.Authentications;
 using webbanxe.Models.ModelView;
 
-namespace webbanxe.Controllers
+namespace webbanxe.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class OrdersController : Controller
     {
         private readonly DataContext _context;
-
-        private const int STATUS_ORDER_SUCCESS = 0;
-        private const int STATUS_CANCEL = 3;
-        private const int STATUS_PAYMENT = 2;
-        private const int STATUS_APPROVE = 1;
 
         public OrdersController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: Orders
+        // GET: Admin/Orders
+        [Authentication]
         public async Task<IActionResult> Index()
         {
-            //return _context.Order != null ? 
-            //            View(await _context.Order.ToListAsync()) :
-            //            Problem("Entity set 'DataContext.Order'  is null.");
-
-            var result = from o in _context.Order join c in _context.Carts on o.idCart equals c.IdCart
+            var result = from o in _context.Order
+                         join c in _context.Carts on o.idCart equals c.IdCart
                          join b in _context.Bike on c.IdBike equals b.IdBike
                          join u in _context.Users on c.IdUser equals u.IdUser
-                         where c.IdUser == Int32.Parse(HttpContext.Session.GetString("idUser"))
                          select new
                          {
                              Order = o,
                              Cart = c,
                              Bike = b,
-                             User= u
+                             User = u
                          };
 
             var result1 = from o in _context.Order
-                         join c in _context.Carts on o.idCart equals c.IdCart
-                         join b in _context.Accessaries on c.IdAccessary equals b.IdAccessary
-                         join u in _context.Users on c.IdUser equals u.IdUser
-                         where c.IdUser == Int32.Parse(HttpContext.Session.GetString("idUser"))
-                         select new
-                         {
-                             Order = o,
-                             Cart = c,
-                             Accessary = b,
-                             User = u
-                         };
+                          join c in _context.Carts on o.idCart equals c.IdCart
+                          join b in _context.Accessaries on c.IdAccessary equals b.IdAccessary
+                          join u in _context.Users on c.IdUser equals u.IdUser
+
+                          select new
+                          {
+                              Order = o,
+                              Cart = c,
+                              Accessary = b,
+                              User = u
+                          };
             List<ViewOrder> listViewOrder = new List<ViewOrder>();
             if (result != null)
             {
@@ -86,8 +80,8 @@ namespace webbanxe.Controllers
             return View(listViewOrder);
         }
 
-
-        [HttpGet("Orders/Cancal-Order/{id:int}")]
+        [HttpGet("Admin/Orders/Cancal-Order/{id:int}")]
+        [Authentication]
         public async Task<IActionResult> Cancal_Order(int? id)
         {
             if (id == null || _context.Order == null)
@@ -97,8 +91,8 @@ namespace webbanxe.Controllers
 
             var order = await _context.Order
                 .FirstOrDefaultAsync(m => m.IdOrder == id);
-            
-                
+
+
             if (order == null)
             {
                 return NotFound();
@@ -108,12 +102,12 @@ namespace webbanxe.Controllers
                 var cart = await _context.Carts.FirstOrDefaultAsync(m => m.IdCart == order.idCart);
                 var bike = await _context.Bike.FirstOrDefaultAsync(m => m.IdBike == cart.IdBike);
                 var acc = await _context.Accessaries.FirstOrDefaultAsync(m => m.IdAccessary == cart.IdAccessary);
-                if(bike!= null)
+                if (bike != null)
                 {
                     bike.Quantity = bike.Quantity + cart.QuantityPurchased;
                     _context.Bike.Update(bike);
                 }
-               if( acc != null)
+                if (acc != null)
                 {
                     acc.Quantity = acc.Quantity + cart.QuantityPurchased;
                     _context.Accessaries.Update(acc);
@@ -127,7 +121,8 @@ namespace webbanxe.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet("Orders/Payment-Order/{id:int}")]
+        [HttpGet("Admin/Orders/Payment-Order/{id:int}")]
+        [Authentication]
         public async Task<IActionResult> Payment_Order(int? id)
         {
             if (id == null || _context.Order == null)
@@ -153,8 +148,9 @@ namespace webbanxe.Controllers
         }
 
 
-        // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet("Admin/Orders/Approve-Order/{id:int}")]
+        [Authentication]
+        public async Task<IActionResult> Approve_Order(int? id)
         {
             if (id == null || _context.Order == null)
             {
@@ -163,119 +159,83 @@ namespace webbanxe.Controllers
 
             var order = await _context.Order
                 .FirstOrDefaultAsync(m => m.IdOrder == id);
+
             if (order == null)
             {
                 return NotFound();
             }
-
-            return View(order);
-        }
-
-        // GET: Orders/Create
-        [HttpGet("Orders/Create/{idCart:int}")]
-        public async Task<IActionResult> Create(int idCart)
-        {
-            if(HttpContext.Session.GetString("idUser") != null)
+            else
             {
-                if (idCart != 0 || idCart != null)
-                {
-                    User user = await _context.Users.FirstOrDefaultAsync(m => m.IdUser == Int32.Parse(HttpContext.Session.GetString("idUser")));
-                    Cart cart = await _context.Carts.FirstOrDefaultAsync(m => m.IdCart == idCart);
-                    Order order = new Order();
-                    order.idCart = idCart;
-                    order.OrderStatus =STATUS.PENDING.ToString();
-                    order.Address = "";
-                    order.NumberPhone = user.Phone;
-                  
-                    return View(order);
-                 }
+                order.OrderStatus = STATUS.APPROVE.ToString();
+                _context.Order.Update(order);
+                _context.SaveChanges();
             }
-            return View();
+
+            return RedirectToAction("Index");
         }
 
-        // POST: Orders/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdOrder,NumberPhone,Address,OrderStatus,idCart")] Order order)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(order);
-                var cart = await _context.Carts.FindAsync(order.idCart);
-               
-                var bike= await _context.Bike.FindAsync(cart.IdBike);
-                var accessary = await _context.Accessaries.FindAsync(cart.IdAccessary);
-                if (bike != null)
-                {
-                    bike.Quantity = bike.Quantity - cart.QuantityPurchased; 
-                    _context.Bike.Update(bike);
-                }
-                if (accessary != null)
-                {
-                    accessary.Quantity = accessary.Quantity - cart.QuantityPurchased;
-                    _context.Accessaries.Update(accessary);
-                }
-               
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(order);
-        }
-
-        // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet("Admin/Orders/Delivering-Order/{id:int}")]
+        [Authentication]
+        public async Task<IActionResult> Delivering_Order(int? id)
         {
             if (id == null || _context.Order == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Order.FindAsync(id);
+            var order = await _context.Order
+                .FirstOrDefaultAsync(m => m.IdOrder == id);
+
             if (order == null)
             {
                 return NotFound();
             }
-            return View(order);
+            else
+            {
+                if(order.OrderStatus.Equals(STATUS.PAYMENT.ToString()))
+                {
+                    order.OrderStatus = order.OrderStatus + "," + STATUS.DELIVERING.ToString();
+                }
+                else
+                {
+                    order.OrderStatus = STATUS.NO_PAYMENT + "," + STATUS.DELIVERING;
+                }
+                
+                _context.Order.Update(order);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
         }
 
-        // POST: Orders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdOrder,NumberPhone,Address,OrderStatus,idCart")] Order order)
+        [HttpGet("Admin/Orders/Delivered-Order/{id:int}")]
+        [Authentication]
+        public async Task<IActionResult> Delivered_Order(int? id)
         {
-            if (id != order.IdOrder)
+            if (id == null || _context.Order == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var order = await _context.Order
+                .FirstOrDefaultAsync(m => m.IdOrder == id);
+
+            if (order == null)
             {
-                try
-                {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.IdOrder))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            return View(order);
+            else
+            {
+                order.OrderStatus =STATUS.PAYMENT.ToString()+","+ STATUS.DELIVERED.ToString();
+                _context.Order.Update(order);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
         }
 
         // GET: Orders/Delete/5
+        [Authentication]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Order == null)
@@ -294,8 +254,10 @@ namespace webbanxe.Controllers
         }
 
         // POST: Orders/Delete/5
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authentication]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Order == null)
@@ -307,14 +269,14 @@ namespace webbanxe.Controllers
             {
                 _context.Order.Remove(order);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool OrderExists(int id)
         {
-          return (_context.Order?.Any(e => e.IdOrder == id)).GetValueOrDefault();
+            return (_context.Order?.Any(e => e.IdOrder == id)).GetValueOrDefault();
         }
     }
 }

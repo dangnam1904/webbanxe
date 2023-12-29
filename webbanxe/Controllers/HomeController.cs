@@ -152,6 +152,16 @@ namespace webbanxe.Controllers
             return View();
         }
 
+        [Route("/{id:int}/phu-kien.html"),  HttpGet]
+        public async Task<IActionResult> DetailAccessaries(int? id)
+        {
+            var  accessaries = from acc in _context.Accessaries where acc.IdAccessary==id select acc;
+            ViewBag.Accessaries = accessaries;
+            var listAccessaries = from a in _context.Accessaries.OrderByDescending(a=> a.NameAccessary).Take(6).ToList() select a;
+            ViewBag.ListAccessaries = listAccessaries;
+            return View(accessaries);
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

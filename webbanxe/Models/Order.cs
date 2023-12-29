@@ -15,8 +15,10 @@ namespace webbanxe.Models
         [Required]
         [MaxLength(300)]
         public string Address { get; set; }
+
         [Required]
-        public int OrderStatus { get; set; }
+        [StringLength(200)]
+        public string OrderStatus { get; set; }
 
         public int idCart { get; set; }
 

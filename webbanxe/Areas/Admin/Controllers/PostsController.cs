@@ -51,18 +51,18 @@ namespace webbanxe.Areas.Admin.Controllers
 
             return View(post);
         }
-        [Authentication]
+       // [Authentication]
         public async Task<IActionResult> CreateOrUpdate(int id)
         {
             var post = await _context.Posts
                 .Include(p => p.menu)
                 .FirstOrDefaultAsync(m => m.PostID == id);
-            return View(post);
+            return post!=null ? View(post) : View(new Post());
         }
 
 
         [HttpPost]
-        [Authentication]
+       // [Authentication]
         public async Task<IActionResult> CreateOrUpdate(Post post)
         {
             if (ModelState.IsValid)
