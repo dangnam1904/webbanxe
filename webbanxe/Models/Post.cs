@@ -45,6 +45,7 @@ namespace webbanxe.Models
         public int MenuID { get; set; }
 
         [ValidateNever]
+        
         public virtual Menu menu { get; set; }
 
     }

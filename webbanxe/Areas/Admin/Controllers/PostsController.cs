@@ -72,9 +72,10 @@ namespace webbanxe.Areas.Admin.Controllers
                     if (post.ImageFile != null)
                     {
                        post.Images = Functions.saveSingleImage(post.ImageFile);
-                        post.MenuID = 1;
-                        _context.Posts.Add(post);
+        
                     }
+                    post.MenuID = 1;
+                    _context.Posts.Add(post);
                 }
                 else
                 {

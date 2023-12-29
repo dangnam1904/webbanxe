@@ -40,6 +40,9 @@ namespace webbanxe.Controllers
             }
             var post = _context.Posts
                 .FirstOrDefault(m => (m.PostID == id) && (m.IsActive == true));
+
+            var recentPost = from m in _context.Posts orderby m.CreatedDate ascending select m;
+            ViewBag.RecentPost = recentPost;
             if (post == null)
             {
                 return NotFound();

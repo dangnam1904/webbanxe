@@ -1,4 +1,5 @@
 ﻿@model webbanxe.Models.Post
+@using webbanxe.Utilities
 
 <!-- Blog Start -->
 <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
@@ -97,8 +98,20 @@
               
                 <!-- Category End -->
                
-                @await Component.InvokeAsync("RecentPost")
-
+               @*  @await Component.InvokeAsync("RecentPost") *@
+                <div class="mb-5 wow slideInUp" data-wow-delay="0.1s">
+                    <div class="section-title section-title-sm position-relative pb-3 mb-4">
+                        <h3 class="mb-0">Recent Post</h3>
+                    </div>
+                    @foreach (var item in ViewBag.RecentPost)
+                    {
+                        string url = Functions.TitleSlugGeneration("", item.Title, item.PostID);
+                        <div class="d-flex rounded overflow-hidden mb-3">
+                            <img class="img-fluid" src="../img/@item.Images" style="width: 100px; height: 100px; object-fit: cover;" alt="">
+                            <a href="/post/@url" class="h5 fw-semi-bold d-flex align-items-center bg-light px-3 mb-0">@item.Title</a>
+                        </div>
+                    }
+                </div>
                 <!-- Image Start -->
                 <div class="mb-5 wow slideInUp" data-wow-delay="0.1s">
                     <img src="../img/blog-1.jpg" alt="" class="img-fluid rounded">
